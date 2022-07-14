@@ -18,7 +18,8 @@ IS_LINUX="false"
 WINDOWS32_INSTALL_PATH="$(pwd)/../../build-tools/windows/x86"
 WINDOWS64_INSTALL_PATH="$(pwd)/../../build-tools/windows/x86-64"
 MACOS_INSTALL_PATH="$(pwd)/../../build-tools/macOS"
-LINUX_INSTALL_PATH="$(pwd)/../../build-tools/linux"
+LINUX32_INSTALL_PATH="$(pwd)/../../build-tools/linux/x86"
+LINUX64_INSTALL_PATH="$(pwd)/../../build-tools/linux/x86-64"
 
 # Decided paths (Values determined later based based on OS)
 PLATFORM_INSTALL_PATH=""
@@ -135,7 +136,11 @@ if [ "${IS_WINDOWS}" = "true" ]; then
 elif [ "${IS_MACOS}" = "true" ]; then
     PLATFORM_INSTALL_PATH="${MACOS_INSTALL_PATH}"
 else
-    PLATFORM_INSTALL_PATH="${LINUX_INSTALL_PATH}"
+    if [ "$(arch)" = "x86_64" ]; then
+        PLATFORM_INSTALL_PATH="${LINUX64_INSTALL_PATH}"
+    else
+        PLATFORM_INSTALL_PATH="${LINUX32_INSTALL_PATH}"
+    fi
 fi
 
 ###################################################################
