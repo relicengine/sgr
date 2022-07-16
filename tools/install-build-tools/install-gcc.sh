@@ -14,16 +14,6 @@ IS_WINDOWS="false"
 IS_MACOS="false"
 IS_LINUX="false"
 
-# OS specific paths
-WINDOWS32_INSTALL_PATH="$(pwd)/../../build-tools/windows/x86"
-WINDOWS64_INSTALL_PATH="$(pwd)/../../build-tools/windows/x86-64"
-MACOS_INSTALL_PATH="$(pwd)/../../build-tools/macOS"
-LINUX32_INSTALL_PATH="$(pwd)/../../build-tools/linux/x86"
-LINUX64_INSTALL_PATH="$(pwd)/../../build-tools/linux/x86-64"
-
-# Decided paths (Values determined later based based on OS)
-PLATFORM_INSTALL_PATH=""
-
 # Others
 EXE_SUFFIX="" #Will become ".exe" later if the build system is Windows
 NPROC="6" #Change this to build GCC with more or less CPU cores!
@@ -121,33 +111,9 @@ make -j "$NPROC" gcc PREFIX="${GCC_PREFIX}" SHELL="${SHELL_PATH}"
 cd ..
 
 ###################################################################
-# Decide OS Specific Install Paths
+# Zip the Toolchain for Storage in RRGamesCDN
 ###################################################################
-if [ "${IS_WINDOWS}" = "true" ]; then
-
-    if [ "$(arch)" = "x86_64" ]; then
-        PLATFORM_INSTALL_PATH="${WINDOWS64_INSTALL_PATH}"
-    else
-        PLATFORM_INSTALL_PATH="${WINDOWS32_INSTALL_PATH}"
-    fi
-    
-    EXE_SUFFIX=".exe"
-    
-elif [ "${IS_MACOS}" = "true" ]; then
-    PLATFORM_INSTALL_PATH="${MACOS_INSTALL_PATH}"
-else
-    if [ "$(arch)" = "x86_64" ]; then
-        PLATFORM_INSTALL_PATH="${LINUX64_INSTALL_PATH}"
-    else
-        PLATFORM_INSTALL_PATH="${LINUX32_INSTALL_PATH}"
-    fi
-fi
-
-###################################################################
-# Copy Built Tools to Destination
-###################################################################
-mkdir -p "${PLATFORM_INSTALL_PATH}"
-cp -r "${GCC_TOOLCHAIN_NAME}" "${PLATFORM_INSTALL_PATH}"
+tar --xz -cf "${GCC_TOOLCHAIN_NAME}".tar.xz "${GCC_TOOLCHAIN_NAME}"
 
 ###################################################################
 # Clean up
