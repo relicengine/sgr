@@ -2,17 +2,19 @@
 ###################################################################
 # Variables
 ###################################################################
-MAKECMDGOALS 	:= $(filter-out usage, $(MAKECMDGOALS)) #Do not use 'usage' target in the make forwarding process
+include makefile-variables.mk
 
 
 ###################################################################
 # Rules
 ###################################################################
-.PHONY: usage $(MAKECMDGOALS)
+.PHONY: usage release debug
 
 usage:
-	make -f ./RetroRevivalGames/sgr/library-build.mk
+	@echo Usage: make release
+	@echo        make debug
+	@echo Build a SEGA Genesis ROM with either release or debug configuration.
 
-#$(MAKECMDGOALS):
-#	@$(MAKE) --file ./makefile-rules.mk BUILD_CONFIG=$@
-# DO NOT DELETE
+release:
+
+debug: 

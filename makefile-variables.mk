@@ -7,10 +7,11 @@ LTO_ENABLE						:= yes
 
 
 ###################################################################
-# Internal Variables
+# Filepath Variables
 ###################################################################
-### SGR Filepath Variables ########################################
-# NOTE: path_sgr defined and exported from Makefile
+path_sgr						:= $(dir $(lastword $(abspath $(MAKEFILE_LIST))))
+path_sgr						:= $(path_sgr:/=)
+
 path_build_tools				:= $(path_sgr)/build-tools
 path_gcc						:= $(path_build_tools)/m68k-amigaos-toolchain/bin
 
@@ -18,7 +19,7 @@ path_sgr_dependencies			:= $(path_sgr)/dep
 path_sgr_sources				:= $(path_sgr)/src
 path_sgr_objects				:= $(path_sgr)/obj
 
-path_sgr_objects_lto			:= $(path_sgr_objects)/lto
+path_sgr_objects_lto			:= $(path_sgr_objects)/release-lto
 path_sgr_objects_release		:= $(path_sgr_objects)/release
 path_sgr_objects_debug			:= $(path_sgr_objects)/debug
 path_sgr_objects_assembly		:= $(path_sgr_objects)/asm
@@ -33,13 +34,11 @@ path_sgr_Z80_objects_release	:= $(path_sgr_Z80_objects)/release
 path_sgr_Z80_objects_debug		:= $(path_sgr_Z80_objects)/debug
 path_sgr_Z80_objects_assembly	:= $(path_sgr_Z80_objects)/asm
 
-
-### Project Filepath Variables ####################################
 path_project_dependencies		:= dep
 path_project_sources			:= src
 path_project_objects			:= obj
 
-path_project_objects_lto		:= $(path_project_objects)/lto
+path_project_objects_lto		:= $(path_project_objects)/release-lto
 path_project_objects_release	:= $(path_project_objects)/release
 path_project_objects_debug		:= $(path_project_objects)/debug
 path_project_objects_assembly	:= $(path_project_objects)/asm
@@ -48,8 +47,15 @@ path_project_Z80				:= Z80
 path_project_Z80_programs		:= $(path_project_Z80)
 
 path_project_bin				:= bin
+path_project_bin_lto			:= bin/release-lto
+path_project_bin_release		:= bin/release
+path_project_bin_debug			:= bin/debug
 
 
+
+###################################################################
+# Source and Dependency Files
+###################################################################
 ### Dependencies ##################################################
 dependencies_sgr				:= $(path_sgr_dependencies)/dependencies.d
 dependencies_project			:= $(path_project_dependencies)/dependencies.d
@@ -65,7 +71,10 @@ sources_project_C 				:= $(shell find $(path_project_sources) -name "*.c")
 sources_project_assembly 		:= $(shell find $(path_project_sources) -name "*.s")
 
 
-### Folders #######################################################
+
+###################################################################
+# Collection of Prerequisite Folders
+###################################################################
 folders							:= $(path_sgr_dependencies)
 folders							+= $(path_sgr_Z80_dependencies)
 folders							+= $(path_project_dependencies)
@@ -81,6 +90,7 @@ folders							+= $(path_project_objects_release)
 folders							+= $(path_project_objects_debug)
 folders							+= $(path_project_objects_assembly)
 folders							+= $(path_project_bin)
+folders							+= $()
 
 
 

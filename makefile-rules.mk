@@ -7,36 +7,10 @@ include $(path_sgr)/makefile-variables.mk
 ###################################################################
 # .PHONY Rules
 ###################################################################
-.PHONY: release debug god clean
+.PHONY: default clean
 
+default:
 
-### Build Configurations ##########################################
-# Configuration specific variables
-release: CFLAGS := -I $(path_sgr)/include -I include
-
-debug: CFLAGS := -I $(path_sgr)/include -I include
-
-# Configuration recipies
-release debug: $(folder_dependencies)\
-               $(path_build_tools)/m68k-amigaos-toolchain\
-               $(path_project_bin_release)/rom.bin
-
-god: /home/Matthew/RetroRevivalGames/sgr/obj/debug/otherfolder/main.o
-	@echo $(info $(call TEMPLATE_RULE_,/home/Matthew/RetroRevivalGames/sgr/obj/debug/otherfolder/main.o))
-
-/home/Matthew/RetroRevivalGames/sgr/obj/%.o:
-	@echo Stem is: $*
-
-### Cleanup #######################################################
-clean:
-	rm -rf $(path_sgr_dependencies)
-	rm -rf $(path_sgr_Z80_dependencies)
-	rm -rf $(path_project_dependencies)
-	rm -rf $(path_sgr_objects)
-	rm -rf $(path_sgr_Z80_objects)
-	rm -rf $(path_project_objects)
-	rm -rf $(path_project_bin)
-	rm -rf $(path_build_tools)
 
 
 
@@ -62,15 +36,6 @@ $(path_sgr)/build-tools/m68k-amigaos-toolchain:
 $(folders):
 	mkdir -p $@
 
-
-
-###################################################################
-# Template Rules
-###################################################################
-define TEMPLATE_RULE_
-$(1): $(subst obj/$(configuration_type),src, $(1:.o=.c))
-	$(CC) -c $(CFLAGS) -o $$@ $$<
-endef
 
 
 
@@ -100,3 +65,18 @@ endef
 ###################################################################
 -include $(dependencies_sgr)
 -include $(dependencies_project)
+
+
+###################################################################
+# Template Rules
+###################################################################
+#god: /home/Matthew/RetroRevivalGames/sgr/obj/debug/otherfolder/main.o
+#	@echo $(info $(foreach obj,/home/Matthew/RetroRevivalGames/sgr/obj/debug/otherfolder/main.o /home/Matthew/RetroRevivalGames/sgr/obj/debug/add.o, $(call TEMPLATE_RULE_,$(obj))))
+
+#/home/Matthew/RetroRevivalGames/sgr/obj/%.o:
+#	@echo Stem is: $*
+
+#define TEMPLATE_RULE_
+#$(1): $(subst obj/$(configuration_type),src, $(1:.o=.c))
+#	$(CC) -c $(CFLAGS) -o $$@ $$<
+#endef
