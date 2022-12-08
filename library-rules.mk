@@ -2,27 +2,27 @@
 include $(path_sgr)/library-variables.mk
 -include $(dependencies_sgr_68k)
 
+# Remove object files without corresponding sources
+$(shell path_sgr_68k_objects_debug=$(path_sgr_68k_objects_debug) \
+		path_sgr_68k_objects_release=$(path_sgr_68k_objects_release) \
+		path_sgr_68k_objects_lto=$(path_sgr_68k_objects_lto) \
+		path_sgr_68k_sources=$(path_sgr_68k_sources) \
+		path_sgr_68k_dependencies=$(path_sgr_68k_dependencies) \
+		$(path_sgr)/tools/remove-unused-objects/remove-unused-objects.sh \
+)
 
 ###################################################################
 # Rules - Build Configurations
 ###################################################################
 .PHONY: release debug build
 
-release: another
-
-another:
-	echo $(sources_sgr_68k_C)
-#	echo $(info $(foreach object_index, \
-                 $(shell seq $(words $(objects_sgr_68k_C))), \
-				 $(call OBJECT_SGR_68K_C_TEMPLATE,$(subst $(space_character_delimiter),\ ,$(notdir $(word $(object_index), $(objects_sgr_68k_C)))),$(subst $(space_character_delimiter),\ ,$(word $(object_index), $(sources_sgr_68k_C))),$(subst $(space_character_delimiter),\ ,$(path_sgr_68k_dependencies)/$(notdir $(word $(object_index),$(sources_sgr_68k_C:.c=.c.d))))\
-				  )\
-		)\
-)
-
-
+release: build
 debug: build
 
-build: $(folder_prerequisites) $(path_build_tools) $(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_C)) $(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_ASM))
+build: 	$(folder_prerequisites) \
+		$(path_build_tools) \
+		$(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_C)) \
+		$(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_ASM))
 
 
 ###################################################################
@@ -48,7 +48,7 @@ $(folder_prerequisites):
 # Rules - Template Rules
 ###################################################################
 
-# Generate Rule for Each C Source file
+# Generate Rule for Each 68k C Source file
 # $(1) = The 68k object file to compile from C source.
 # $(2) = The corresponding C source file the object depends on.
 # $(3) = The resulting dependency file. In the dependency folder.
@@ -71,7 +71,7 @@ $(eval $(foreach object_index, \
 		)\
 )
 
-# Generate Rule for Each Assembly Source file
+# Generate Rule for Each 68k Assembly Source file
 # $(1) = The 68k object file to compile from assembler source.
 # $(2) = The corresponding assembler source file the object depends on.
 # $(3) = The resulting dependency file. In the dependency folder.
@@ -83,6 +83,8 @@ $(path_sgr_68k_objects)/$(1): $(2)
 	sed -i "s,$(2),$(path_sgr_68k_objects_debug)/$(1)," $(3)
 	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_sgr_68k_objects_debug)/$(1),$(path_sgr_68k_objects_release)/$(1)," >> $(3)
 	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_sgr_68k_objects_debug)/$(1),$(path_sgr_68k_objects_lto)/$(1)," >> $(3)
+	sed -i "s, ,\\\ ,g" $(3)
+	sed -i "s,:\\\ ,: ,g" $(3)
 
 endef
 $(eval $(foreach object_index, \
