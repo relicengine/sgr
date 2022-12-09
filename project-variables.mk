@@ -29,6 +29,7 @@ dependencies_project_68k			:= $(shell find $(path_project_68k_dependencies) -typ
 ###################################################################
 objects_sgr_68k						:= $(shell find $(path_sgr_68k_objects) -type f -regex ".*.o" 2> /dev/null | sed "s, ,\\\ ,g")
 
+
 ###################################################################
 # SGR Project Binary Path
 ###################################################################
@@ -39,9 +40,10 @@ else ifeq ($(MAKECMDGOALS),release)
 	path_project_bin				:= bin/release
 endif
 
+
 ###################################################################
 # SGR Folder Dependencies
 ###################################################################
-folder_prerequisites			:= $(path_project_68k_dependencies)
-folder_prerequisites			+= $(path_project_68k_objects)
-folder_prerequisites			+= $(path_project_bin)
+folder_prerequisites				:= $(path_project_68k_dependencies)
+folder_prerequisites				+= $(path_project_68k_objects)
+folder_prerequisites				+= $(path_project_bin)

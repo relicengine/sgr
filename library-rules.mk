@@ -2,28 +2,19 @@
 include $(path_sgr)/library-variables.mk
 -include $(dependencies_sgr_68k)
 
-# Remove object files without corresponding sources
-#$(shell path_sgr_68k_objects_debug=$(path_sgr_68k_objects_debug) \
-		path_sgr_68k_objects_release=$(path_sgr_68k_objects_release) \
-		path_sgr_68k_objects_lto=$(path_sgr_68k_objects_lto) \
-		path_sgr_68k_sources=$(path_sgr_68k_sources) \
-		path_sgr_68k_dependencies=$(path_sgr_68k_dependencies) \
-		$(path_sgr)/tools/remove-unused-objects/remove-unused-objects.sh \
-)
-
 ###################################################################
 # Rules - Build Configurations
 ###################################################################
-.PHONY: release debug build
+.PHONY: 	release debug build
 
-lto: build
-release: build
-debug: build
+lto: 		build
+release:	build
+debug: 		build
 
-build: 	$(folder_prerequisites) \
-		$(path_build_tools) \
-		$(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_C)) \
-		$(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_ASM))
+build: 		$(folder_prerequisites) \
+			$(path_build_tools) \
+			$(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_C)) \
+			$(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_ASM))
 
 
 ###################################################################
@@ -38,10 +29,9 @@ $(path_68k_toolchain):
 
 
 ###################################################################
-# Rules - ???
+# Rules - Setup Prerequisite Folders
 ###################################################################
 $(folder_prerequisites):
-
 	mkdir -p "$@"
 
 
@@ -56,7 +46,7 @@ $(folder_prerequisites):
 define OBJECT_SGR_68K_C_TEMPLATE
 
 $(path_sgr_68k_objects)/$(1): $(2)
-	$(CC) -c $(CFLAGS) -I $(path_sgr_68k_include) -o "$$@" "$$<"
+	$(CC) -c $(CFLAGS_68K) -I $(path_sgr_68k_include) -o "$$@" "$$<"
 	makedepend -f- -o .c -I $(path_sgr_68k_include) "$$<" > $(3)
 	sed -i "s,$(2),$(path_sgr_68k_objects_debug)/$(1)," $(3)
 	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_sgr_68k_objects_debug)/$(1),$(path_sgr_68k_objects_release)/$(1)," >> $(3)
@@ -79,7 +69,7 @@ $(eval $(foreach object_index, \
 define OBJECT_SGR_68K_ASM_TEMPLATE
 
 $(path_sgr_68k_objects)/$(1): $(2)
-	$(CPP) -P -I $(path_sgr_68k_include) "$$<" | $(CC) -c -x assembler $(ASFLAGS) -I $(path_sgr_68k_include) -o "$$@" -
+	$(CPP) -P -I $(path_sgr_68k_include) "$$<" | $(AS) $(ASFLAGS_68K) -I $(path_sgr_68k_include) -o "$$@" -
 	makedepend -f- -o .asm -I $(path_sgr_68k_include) "$$<" > $(3)
 	sed -i "s,$(2),$(path_sgr_68k_objects_debug)/$(1)," $(3)
 	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_sgr_68k_objects_debug)/$(1),$(path_sgr_68k_objects_release)/$(1)," >> $(3)

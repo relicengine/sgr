@@ -22,7 +22,7 @@ ifndef path_sgr
 								xargs dirname | \
 								sed "s, ,\\\ ,g")
 								
-	export 			path_sgr #Export path_sgr for all other .mk files to use.
+	export 			path_sgr
 endif
 
 MAKECMDGOALS 	:= $(filter-out usage, $(MAKECMDGOALS)) #Do not use 'usage' target in the make forwarding process.

@@ -1,5 +1,5 @@
 
-space_character_delimiter	:= ?
+space_character_delimiter		:= ?
 #PRINT = @echo -e "\e[1;34mBuilding $<\e[0m"
 
 ###################################################################
@@ -17,9 +17,9 @@ path_sgr_68k_objects_release	:= $(path_sgr)/obj/release
 path_sgr_68k_objects_lto		:= $(path_sgr)/obj/lto
 path_sgr_68k_objects			:= $(path_sgr_68k_objects_debug)
 ifeq ($(MAKECMDGOALS),lto)
-	path_sgr_68k_objects	:= $(path_sgr_68k_objects_lto)
+	path_sgr_68k_objects		:= $(path_sgr_68k_objects_lto)
 else ifeq ($(MAKECMDGOALS),release)
-	path_sgr_68k_objects	:= $(path_sgr_68k_objects_release)
+	path_sgr_68k_objects		:= $(path_sgr_68k_objects_release)
 endif
 
 
@@ -48,3 +48,23 @@ CPP								:= $(path_68k_toolchain)/bin/m68k-amigaos-cpp
 AS								:= $(path_68k_toolchain)/bin/m68k-amigaos-as
 AR								:= $(path_68k_toolchain)/bin/m68k-amigaos-ar
 OBJCPY							:= $(path_68k_toolchain)/bin/m68k-amigaos-objcopy
+OBJDUMP							:= $(path_68k_toolchain)/bin/m68k-amigaos-objdump
+RM								:= rm
+
+DEFAULT_CFLAGS_68K				:= $(USER_CFLAGS) -mregparm=4 -m68000 -ffunction-sections -fomit-frame-pointer -fno-leading-underscore -nostdlib -Wall -Wextra -Wno-shift-negative-value -Wno-unused-parameter -fno-builtin
+ifeq ($(MAKECMDGOALS),lto)
+	CFLAGS_68K 					:= $(DEFAULT_CFLAGS_68K) -O3 -flto
+else ifeq ($(MAKECMDGOALS),release)
+	CFLAGS_68K 					:= $(DEFAULT_CFLAGS_68K) -O3
+else
+	CFLAGS_68K 					:= $(DEFAULT_CFLAGS_68K) -O1
+endif
+
+DEFAULT_ASFLAGS_68K				:= $(USER_ASFLAGS) --register-prefix-optional
+ifeq ($(MAKECMDGOALS),lto)
+	ASFLAGS_68K 				:= $(DEFAULT_ASFLAGS_68K)
+else ifeq ($(MAKECMDGOALS),release)
+	ASFLAGS_68K 				:= $(DEFAULT_ASFLAGS_68K)
+else
+	ASFLAGS_68K 				:= $(DEFAULT_ASFLAGS_68K)
+endif

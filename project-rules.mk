@@ -1,19 +1,20 @@
 
-include $(path_sgr)/project-variables.mk
--include $(dependencies_project_68k)
+include 	$(path_sgr)/project-variables.mk
+-include 	$(dependencies_project_68k)
 
 ###################################################################
 # Rules - Build Configurations
 ###################################################################
-lto: build
-release: build
-debug: build
+.PHONY: 	release debug build
 
-build: 	$(path_sgr_68k_objects) \
-		$(folder_prerequisites) \
-		$(subst $(space_character_delimiter),\ ,$(objects_project_68k_C)) \
-		$(subst $(space_character_delimiter),\ ,$(objects_project_68k_ASM)) \
-		$(path_project_bin)/rom.bin
+lto:		build
+release: 	build
+debug: 		build
+
+build: 		$(folder_prerequisites) \
+			$(subst $(space_character_delimiter),\ ,$(objects_project_68k_C)) \
+			$(subst $(space_character_delimiter),\ ,$(objects_project_68k_ASM)) \
+			$(path_project_bin)/rom.bin
 
 
 ###################################################################
@@ -23,11 +24,12 @@ $(path_project_bin)/rom.bin: $(path_project_bin)/rom.out
 	$(OBJCPY) -O binary $< $@
 
 $(path_project_bin)/rom.out: $(objects_sgr_68k) $(objects_project_68k)
-	$(CC) -nostdlib -o $(path_project_bin)/rom.out $(objects_sgr_68k) $(objects_project_68k)
+	$(CC) -flto -nostdlib -Wl,-T $(path_sgr)/link.lds -Wl,--gc-sections,-Map=$(path_project_bin)/rom.map -o $(path_project_bin)/rom.out $(objects_sgr_68k) $(objects_project_68k)
+	$(OBJDUMP) -d $(path_project_bin)/rom.out > $(path_project_bin)/rom.dump
 
 
 ###################################################################
-# Rules - Setup Prerequisites
+# Rules - Setup Prerequisite Folders
 ###################################################################
 $(folder_prerequisites):
 	mkdir -p "$@"
@@ -44,8 +46,8 @@ $(folder_prerequisites):
 define OBJECT_PROJECT_68K_C_TEMPLATE
 
 $(path_project_68k_objects)/$(1): $(2)
-	$(CC) -c $(CFLAGS) -I $(path_project_68k_include) -o "$$@" "$$<"
-	makedepend -f- -o .c -I $(path_project_68k_include) "$$<" > $(3)
+	$(CC) -c $(CFLAGS_68K) -I $(path_project_68k_include) -I $(path_sgr_68k_include) -o "$$@" "$$<"
+	makedepend -f- -o .c -I $(path_project_68k_include) -I $(path_sgr_68k_include) "$$<" > $(3)
 	sed -i "s,$(2),$(path_project_68k_objects_debug)/$(1)," $(3)
 	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_project_68k_objects_debug)/$(1),$(path_project_68k_objects_release)/$(1)," >> $(3)
 	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_project_68k_objects_debug)/$(1),$(path_project_68k_objects_lto)/$(1)," >> $(3)
@@ -67,8 +69,8 @@ $(eval $(foreach object_index, \
 define OBJECT_PROJECT_68K_ASM_TEMPLATE
 
 $(path_project_68k_objects)/$(1): $(2)
-	$(CPP) -P -I $(path_project_68k_include) "$$<" | $(CC) -c -x assembler $(ASFLAGS) -I $(path_project_68k_include) -o "$$@" -
-	makedepend -f- -o .asm -I $(path_project_68k_include) "$$<" > $(3)
+	$(CPP) -P -I $(path_project_68k_include) -I $(path_sgr_68k_include) "$$<" | $(AS) $(ASFLAGS_68K) -I $(path_project_68k_include) -I $(path_sgr_68k_include) -o "$$@" -
+	makedepend -f- -o .asm -I $(path_project_68k_include) -I $(path_sgr_68k_include) "$$<" > $(3)
 	sed -i "s,$(2),$(path_project_68k_objects_debug)/$(1)," $(3)
 	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_project_68k_objects_debug)/$(1),$(path_project_68k_objects_release)/$(1)," >> $(3)
 	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_project_68k_objects_debug)/$(1),$(path_project_68k_objects_lto)/$(1)," >> $(3)
@@ -82,3 +84,5 @@ $(eval $(foreach object_index, \
 				  )\
 		)\
 )
+
+#-Wa,$(shell echo $(ASFLAGS_68K) | sed "s/ /,/g")

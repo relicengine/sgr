@@ -3,7 +3,4 @@ build-tools
 dep
 lib
 obj
-src
-include
 Z80
-link.lds

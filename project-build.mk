@@ -37,5 +37,4 @@ usage:
 
 # Forward each goal to project-rules.mk one at a time.
 $(MAKECMDGOALS):
-	@$(MAKE) --file $(path_sgr)/library-rules.mk $@
 	@$(MAKE) --file $(path_sgr)/project-rules.mk $@
