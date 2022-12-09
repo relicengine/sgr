@@ -14,13 +14,16 @@
 #	4. Once again replace and spaces in the output of realpath with escaped spaces.
 #	5. Using the dirname command, take the piped output to get the filpath only, omitting the makefile name.
 #	6. Replace spaces once more from the dirname output.
-path_sgr		:= $(shell  echo $(MAKEFILE_LIST) | \
-							sed "s, ,\\\ ,g" | \
-							xargs realpath | \
-							sed "s, ,\\\ ,g" | \
-							xargs dirname | \
-							sed "s, ,\\\ ,g")
-export 			path_sgr #Export path_sgr for all other .mk files to use.
+ifndef path_sgr
+	path_sgr		:= $(shell  echo $(MAKEFILE_LIST) | \
+								sed "s, ,\\\ ,g" | \
+								xargs realpath | \
+								sed "s, ,\\\ ,g" | \
+								xargs dirname | \
+								sed "s, ,\\\ ,g")
+								
+	export 			path_sgr #Export path_sgr for all other .mk files to use.
+endif
 
 MAKECMDGOALS 	:= $(filter-out usage, $(MAKECMDGOALS)) #Do not use 'usage' target in the make forwarding process.
 

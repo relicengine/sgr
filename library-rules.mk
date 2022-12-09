@@ -3,7 +3,7 @@ include $(path_sgr)/library-variables.mk
 -include $(dependencies_sgr_68k)
 
 # Remove object files without corresponding sources
-$(shell path_sgr_68k_objects_debug=$(path_sgr_68k_objects_debug) \
+#$(shell path_sgr_68k_objects_debug=$(path_sgr_68k_objects_debug) \
 		path_sgr_68k_objects_release=$(path_sgr_68k_objects_release) \
 		path_sgr_68k_objects_lto=$(path_sgr_68k_objects_lto) \
 		path_sgr_68k_sources=$(path_sgr_68k_sources) \
@@ -16,6 +16,7 @@ $(shell path_sgr_68k_objects_debug=$(path_sgr_68k_objects_debug) \
 ###################################################################
 .PHONY: release debug build
 
+lto: build
 release: build
 debug: build
 
