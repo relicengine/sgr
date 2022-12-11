@@ -2,12 +2,14 @@
 include $(path_sgr)/library-variables.mk
 -include $(dependencies_sgr_68k)
 
+#test := $(shell echo $$OSTYPE | grep "cygwin")
+
 ###################################################################
 # Rules - Build Configurations
 ###################################################################
 .PHONY: 	release debug build
 
-lto: 		build
+lto:		build
 release:	build
 debug: 		build
 
@@ -23,7 +25,7 @@ build: 		$(folder_prerequisites) \
 $(path_build_tools): $(path_68k_toolchain)
 
 $(path_68k_toolchain):
-	wget -P $(path_build_tools) https://rrgamescdn.github.io/sgr-bucket/build-tools/windows/64-bit/m68k-amigaos-toolchain.tar.xz
+	wget -P $(path_build_tools) https://rrgamescdn.github.io/sgr-bucket/build-tools/$(OS)/$(ARCH)/m68k-amigaos-toolchain.tar.xz
 	tar -xf $(path_build_tools)/m68k-amigaos-toolchain.tar.xz -C $(path_build_tools)
 	rm -f $(path_build_tools)/m68k-amigaos-toolchain.tar.xz
 

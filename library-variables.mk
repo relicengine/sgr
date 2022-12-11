@@ -25,6 +25,28 @@ dependencies_sgr_68k			:= $(shell find $(path_sgr_68k_dependencies) -type f -reg
 
 
 ###################################################################
+# Operating System and Processor Architecture
+###################################################################
+ifeq ($(shell echo $$OSTYPE | grep cygwin),cygwin)
+	OS							:= windows
+else ifeq ($(shell echo $$OSTYPE | grep darwin),darwin)
+	OS							:= macOS
+else ifeq ($(shell echo $$OSTYPE | grep linux),linux)
+	OS							:= linux
+else
+	OS							:= unsupported-os
+endif
+
+ifeq ($(shell arch),x86_64)
+	ARCH						:= 64-bit
+else ifeq ($(shell arch),i686)
+	ARCH						:= 32-bit
+else
+	ARCH						:= unsupported-arch
+endif
+
+
+###################################################################
 # SGR Folder Dependencies
 ###################################################################
 folder_prerequisites			:= $(path_sgr_68k_dependencies)
