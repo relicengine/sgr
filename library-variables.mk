@@ -27,11 +27,11 @@ dependencies_sgr_68k			:= $(shell find $(path_sgr_68k_dependencies) -type f -reg
 ###################################################################
 # Operating System and Processor Architecture
 ###################################################################
-ifeq ($(shell echo $$OSTYPE | grep cygwin),cygwin)
+ifeq ($(shell echo $$OSTYPE | grep -o cygwin),cygwin)
 	OS							:= windows
-else ifeq ($(shell echo $$OSTYPE | grep darwin),darwin)
+else ifeq ($(shell echo $$OSTYPE | grep -o darwin),darwin)
 	OS							:= macOS
-else ifeq ($(shell echo $$OSTYPE | grep linux),linux)
+else ifeq ($(shell echo $$OSTYPE | grep -o linux),linux)
 	OS							:= linux
 else
 	OS							:= unsupported-os
