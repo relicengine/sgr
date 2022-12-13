@@ -20,6 +20,14 @@ build: 		$(folder_prerequisites) \
 
 
 ###################################################################
+# Rules - Other .PHONY Rules
+###################################################################
+.PHONY: 	clean
+clean:
+	$(RM) -rf $(path_sgr)/obj $(path_sgr)/dep
+
+
+###################################################################
 # Rules - Download Build Tools & Prerequisites
 ###################################################################
 $(path_build_tools): $(path_68k_toolchain)
