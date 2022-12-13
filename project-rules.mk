@@ -24,7 +24,7 @@ $(path_project_bin)/rom.bin: $(path_project_bin)/rom.out
 	$(OBJCPY) -O binary $< $@
 
 $(path_project_bin)/rom.out: $(objects_sgr_68k) $(objects_project_68k)
-	$(CC) -flto -nostdlib -Wl,-T $(path_sgr)/link.lds -Wl,--gc-sections,-Map=$(path_project_bin)/rom.map -o $(path_project_bin)/rom.out $(objects_sgr_68k) $(objects_project_68k)
+	$(CC) $(LTO_FLAG) -nostdlib -Wl,-T $(path_sgr)/link.lds -Wl,-Map=$(path_project_bin)/rom.map -o $(path_project_bin)/rom.out $(objects_sgr_68k) $(objects_project_68k)
 	$(OBJDUMP) -d $(path_project_bin)/rom.out > $(path_project_bin)/rom.dump
 
 

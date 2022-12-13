@@ -53,8 +53,9 @@ OBJCPY							:= $(path_68k_toolchain)/bin/m68k-amigaos-objcopy
 OBJDUMP							:= $(path_68k_toolchain)/bin/m68k-amigaos-objdump
 RM								:= rm
 
-DEFAULT_CFLAGS_68K				:= $(USER_CFLAGS) -mregparm=4 -m68000 -ffunction-sections -fomit-frame-pointer -fno-leading-underscore -nostdlib -Wall -Wextra -Wno-shift-negative-value -Wno-unused-parameter -fno-builtin
+DEFAULT_CFLAGS_68K				:= $(USER_CFLAGS) -mregparm=4 -m68000 -ffunction-sections -fomit-frame-pointer -nostdlib -Wall -Wextra -Wno-shift-negative-value -Wno-unused-parameter -fno-builtin
 ifeq ($(MAKECMDGOALS),lto)
+	LTO_FLAG					:= -flto
 	CFLAGS_68K 					:= $(DEFAULT_CFLAGS_68K) -O3 -flto
 else ifeq ($(MAKECMDGOALS),release)
 	CFLAGS_68K 					:= $(DEFAULT_CFLAGS_68K) -O3
