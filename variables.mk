@@ -42,6 +42,29 @@ else ifeq ($(MAKECMDGOALS),release)
 		path_project_68k_objects := $(path_project_68k_objects_release)
 endif
 
+
+###################################################################
+# Operating System and Processor Architecture
+###################################################################
+ifeq ($(shell echo $$OSTYPE | grep -o cygwin),cygwin)
+	OS							:= windows
+else ifeq ($(shell echo $$OSTYPE | grep -o darwin),darwin)
+	OS							:= macOS
+else ifeq ($(shell echo $$OSTYPE | grep -o linux),linux)
+	OS							:= linux
+else
+	OS							:= unsupported-os
+endif
+
+ifeq ($(shell uname -m),x86_64)
+	ARCH						:= 64-bit
+else ifeq ($(shell uname -m),i686)
+	ARCH						:= 32-bit
+else
+	ARCH						:= unsupported-arch
+endif
+
+
 ###################################################################
 # Externally Overridable Variables
 ###################################################################
@@ -52,6 +75,14 @@ AR								:= $(path_68k_toolchain)/bin/m68k-amigaos-ar
 OBJCPY							:= $(path_68k_toolchain)/bin/m68k-amigaos-objcopy
 OBJDUMP							:= $(path_68k_toolchain)/bin/m68k-amigaos-objdump
 RM								:= rm
+MKDIR							:= mkdir
+MAKEDEPEND						:= makedepend
+AWK								:= awk
+
+SED								:= sed
+ifeq ($(OS),macOS)
+	SED							:= gsed
+endif
 
 DEFAULT_CFLAGS_68K				:= $(USER_CFLAGS) -mregparm=4 -m68000 -ffunction-sections -fomit-frame-pointer -nostdlib -Wall -Wextra -Wno-shift-negative-value -Wno-unused-parameter -fno-builtin
 ifeq ($(MAKECMDGOALS),lto)

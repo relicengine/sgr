@@ -32,7 +32,7 @@ $(path_project_bin)/rom.out: $(objects_sgr_68k) $(objects_project_68k)
 # Rules - Setup Prerequisite Folders
 ###################################################################
 $(folder_prerequisites):
-	mkdir -p "$@"
+	$(MKDIR) -p "$@"
 
 
 ###################################################################
@@ -47,12 +47,12 @@ define OBJECT_PROJECT_68K_C_TEMPLATE
 
 $(path_project_68k_objects)/$(1): $(2)
 	$(CC) -c $(CFLAGS_68K) -I $(path_project_68k_include) -I $(path_sgr_68k_include) -o "$$@" "$$<"
-	makedepend -f- -o .c -I $(path_project_68k_include) -I $(path_sgr_68k_include) "$$<" > $(3)
-	sed -i'' "s,$(2),$(path_project_68k_objects_debug)/$(1)," $(3)
-	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_project_68k_objects_debug)/$(1),$(path_project_68k_objects_release)/$(1)," >> $(3)
-	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_project_68k_objects_debug)/$(1),$(path_project_68k_objects_lto)/$(1)," >> $(3)
-	sed -i'' "s, ,\\\ ,g" $(3)
-	sed -i'' "s,:\\\ ,: ,g" $(3)
+	$(MAKEDEPEND) -f- -o .c -I $(path_project_68k_include) -I $(path_sgr_68k_include) "$$<" > $(3)
+	$(SED) -i "s,$(2),$(path_project_68k_objects_debug)/$(1)," $(3)
+	$(AWK) "NR>=3 && NR<=3" $(3) | $(SED) "s,$(path_project_68k_objects_debug)/$(1),$(path_project_68k_objects_release)/$(1)," >> $(3)
+	$(AWK) "NR>=3 && NR<=3" $(3) | $(SED) "s,$(path_project_68k_objects_debug)/$(1),$(path_project_68k_objects_lto)/$(1)," >> $(3)
+	$(SED) -i "s, ,\\\ ,g" $(3)
+	$(SED) -i "s,:\\\ ,: ,g" $(3)
 
 endef
 $(eval $(foreach object_index, \
@@ -70,12 +70,12 @@ define OBJECT_PROJECT_68K_ASM_TEMPLATE
 
 $(path_project_68k_objects)/$(1): $(2)
 	$(CPP) -P -I $(path_project_68k_include) -I $(path_sgr_68k_include) "$$<" | $(AS) $(ASFLAGS_68K) -I $(path_project_68k_include) -I $(path_sgr_68k_include) -o "$$@" -
-	makedepend -f- -o .asm -I $(path_project_68k_include) -I $(path_sgr_68k_include) "$$<" > $(3)
-	sed -i='' "s,$(2),$(path_project_68k_objects_debug)/$(1)," $(3)
-	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_project_68k_objects_debug)/$(1),$(path_project_68k_objects_release)/$(1)," >> $(3)
-	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_project_68k_objects_debug)/$(1),$(path_project_68k_objects_lto)/$(1)," >> $(3)
-	sed -i'' "s, ,\\\ ,g" $(3)
-	sed -i'' "s,:\\\ ,: ,g" $(3)
+	$(MAKEDEPEND) -f- -o .asm -I $(path_project_68k_include) -I $(path_sgr_68k_include) "$$<" > $(3)
+	$(SED) -i "s,$(2),$(path_project_68k_objects_debug)/$(1)," $(3)
+	$(AWK) "NR>=3 && NR<=3" $(3) | $(SED) "s,$(path_project_68k_objects_debug)/$(1),$(path_project_68k_objects_release)/$(1)," >> $(3)
+	$(AWK) "NR>=3 && NR<=3" $(3) | $(SED) "s,$(path_project_68k_objects_debug)/$(1),$(path_project_68k_objects_lto)/$(1)," >> $(3)
+	$(SED) -i "s, ,\\\ ,g" $(3)
+	$(SED) -i "s,:\\\ ,: ,g" $(3)
 
 endef
 $(eval $(foreach object_index, \
@@ -85,4 +85,4 @@ $(eval $(foreach object_index, \
 		)\
 )
 
-#-Wa,$(shell echo $(ASFLAGS_68K) | sed "s/ /,/g")
+#-Wa,$(shell echo $(ASFLAGS_68K) | $(SED) "s/ /,/g")
