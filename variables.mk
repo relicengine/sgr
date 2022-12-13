@@ -78,6 +78,8 @@ RM								:= rm
 MKDIR							:= mkdir
 MAKEDEPEND						:= makedepend
 AWK								:= awk
+TAR								:= tar
+WGET							:= wget
 
 SED								:= sed
 ifeq ($(OS),macOS)

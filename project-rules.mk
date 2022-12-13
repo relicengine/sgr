@@ -55,12 +55,15 @@ $(path_project_68k_objects)/$(1): $(2)
 	$(SED) -i "s,:\\\ ,: ,g" $(3)
 
 endef
+
+ifneq ($(words $(objects_project_68k_C)),0)
 $(eval $(foreach object_index, \
                  $(shell seq $(words $(objects_project_68k_C))), \
 				 $(call OBJECT_PROJECT_68K_C_TEMPLATE,$(subst $(space_character_delimiter),\ ,$(notdir $(word $(object_index), $(objects_project_68k_C)))),$(subst $(space_character_delimiter),\ ,$(word $(object_index), $(sources_project_68k_C))),$(subst $(space_character_delimiter),\ ,$(path_project_68k_dependencies)/$(notdir $(word $(object_index),$(sources_project_68k_C:.c=.c.d))))\
 				  )\
 		)\
 )
+endif
 
 # Generate Rule for Each 68k Assembly Source file
 # $(1) = The 68k object file to compile from assembler source.
@@ -78,11 +81,12 @@ $(path_project_68k_objects)/$(1): $(2)
 	$(SED) -i "s,:\\\ ,: ,g" $(3)
 
 endef
+
+ifneq ($(words $(objects_project_68k_ASM)),0)
 $(eval $(foreach object_index, \
                  $(shell seq $(words $(objects_project_68k_ASM))), \
 				 $(call OBJECT_PROJECT_68K_ASM_TEMPLATE,$(subst $(space_character_delimiter),\ ,$(notdir $(word $(object_index), $(objects_project_68k_ASM)))),$(subst $(space_character_delimiter),\ ,$(word $(object_index), $(sources_project_68k_ASM))),$(subst $(space_character_delimiter),\ ,$(path_project_68k_dependencies)/$(notdir $(word $(object_index),$(sources_project_68k_ASM:.asm=.asm.d))))\
 				  )\
 		)\
 )
-
-#-Wa,$(shell echo $(ASFLAGS_68K) | $(SED) "s/ /,/g")
+endif

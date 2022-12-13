@@ -25,16 +25,16 @@ build: 		$(folder_prerequisites) \
 $(path_build_tools): $(path_68k_toolchain)
 
 $(path_68k_toolchain):
-	wget -P $(path_build_tools) https://rrgamescdn.github.io/sgr-bucket/build-tools/$(OS)/$(ARCH)/m68k-amigaos-toolchain.tar.xz
-	tar -xf $(path_build_tools)/m68k-amigaos-toolchain.tar.xz -C $(path_build_tools)
-	rm -f $(path_build_tools)/m68k-amigaos-toolchain.tar.xz
+	$(WGET) -P $(path_build_tools) https://rrgamescdn.github.io/sgr-bucket/build-tools/$(OS)/$(ARCH)/m68k-amigaos-toolchain.tar.xz
+	$(TAR) -xf $(path_build_tools)/m68k-amigaos-toolchain.tar.xz -C $(path_build_tools)
+	$(RM) -f $(path_build_tools)/m68k-amigaos-toolchain.tar.xz
 
 
 ###################################################################
 # Rules - Setup Prerequisite Folders
 ###################################################################
 $(folder_prerequisites):
-	mkdir -p "$@"
+	$(MKDIR) -p "$@"
 
 
 ###################################################################
@@ -57,12 +57,15 @@ $(path_sgr_68k_objects)/$(1): $(2)
 	$(SED) -i "s,:\\\ ,: ,g" $(3)
 
 endef
+
+ifneq ($(words $(objects_sgr_68k_C)),0)
 $(eval $(foreach object_index, \
                  $(shell seq $(words $(objects_sgr_68k_C))), \
 				 $(call OBJECT_SGR_68K_C_TEMPLATE,$(subst $(space_character_delimiter),\ ,$(notdir $(word $(object_index), $(objects_sgr_68k_C)))),$(subst $(space_character_delimiter),\ ,$(word $(object_index), $(sources_sgr_68k_C))),$(subst $(space_character_delimiter),\ ,$(path_sgr_68k_dependencies)/$(notdir $(word $(object_index),$(sources_sgr_68k_C:.c=.c.d))))\
 				  )\
 		)\
 )
+endif
 
 # Generate Rule for Each 68k Assembly Source file
 # $(1) = The 68k object file to compile from assembler source.
@@ -80,9 +83,12 @@ $(path_sgr_68k_objects)/$(1): $(2)
 	$(SED) -i "s,:\\\ ,: ,g" $(3)
 
 endef
+
+ifneq ($(words $(objects_sgr_68k_ASM)),0)
 $(eval $(foreach object_index, \
                  $(shell seq $(words $(objects_sgr_68k_ASM))), \
 				 $(call OBJECT_SGR_68K_ASM_TEMPLATE,$(subst $(space_character_delimiter),\ ,$(notdir $(word $(object_index), $(objects_sgr_68k_ASM)))),$(subst $(space_character_delimiter),\ ,$(word $(object_index), $(sources_sgr_68k_ASM))),$(subst $(space_character_delimiter),\ ,$(path_sgr_68k_dependencies)/$(notdir $(word $(object_index),$(sources_sgr_68k_ASM:.asm=.asm.d))))\
 				  )\
 		)\
 )
+endif
