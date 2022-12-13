@@ -37,9 +37,9 @@ else
 	OS							:= unsupported-os
 endif
 
-ifeq ($(shell arch),x86_64)
+ifeq ($(shell uname -m),x86_64)
 	ARCH						:= 64-bit
-else ifeq ($(shell arch),i686)
+else ifeq ($(shell uname -m),i686)
 	ARCH						:= 32-bit
 else
 	ARCH						:= unsupported-arch
