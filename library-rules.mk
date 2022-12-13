@@ -40,7 +40,6 @@ $(folder_prerequisites):
 ###################################################################
 # Rules - Template Rules
 ###################################################################
-
 # Generate Rule for Each 68k C Source file
 # $(1) = The 68k object file to compile from C source.
 # $(2) = The corresponding C source file the object depends on.
@@ -50,11 +49,11 @@ define OBJECT_SGR_68K_C_TEMPLATE
 $(path_sgr_68k_objects)/$(1): $(2)
 	$(CC) -c $(CFLAGS_68K) -I $(path_sgr_68k_include) -o "$$@" "$$<"
 	makedepend -f- -o .c -I $(path_sgr_68k_include) "$$<" > $(3)
-	sed -i "s,$(2),$(path_sgr_68k_objects_debug)/$(1)," $(3)
+	sed -i'' "s,$(2),$(path_sgr_68k_objects_debug)/$(1)," $(3)
 	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_sgr_68k_objects_debug)/$(1),$(path_sgr_68k_objects_release)/$(1)," >> $(3)
 	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_sgr_68k_objects_debug)/$(1),$(path_sgr_68k_objects_lto)/$(1)," >> $(3)
-	sed -i "s, ,\\\ ,g" $(3)
-	sed -i "s,:\\\ ,: ,g" $(3)
+	sed -i'' "s, ,\\\ ,g" $(3)
+	sed -i'' "s,:\\\ ,: ,g" $(3)
 
 endef
 $(eval $(foreach object_index, \
@@ -73,11 +72,11 @@ define OBJECT_SGR_68K_ASM_TEMPLATE
 $(path_sgr_68k_objects)/$(1): $(2)
 	$(CPP) -P -I $(path_sgr_68k_include) "$$<" | $(AS) $(ASFLAGS_68K) -I $(path_sgr_68k_include) -o "$$@" -
 	makedepend -f- -o .asm -I $(path_sgr_68k_include) "$$<" > $(3)
-	sed -i "s,$(2),$(path_sgr_68k_objects_debug)/$(1)," $(3)
+	sed -i'' "s,$(2),$(path_sgr_68k_objects_debug)/$(1)," $(3)
 	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_sgr_68k_objects_debug)/$(1),$(path_sgr_68k_objects_release)/$(1)," >> $(3)
 	awk "NR>=3 && NR<=3" $(3) | sed "s,$(path_sgr_68k_objects_debug)/$(1),$(path_sgr_68k_objects_lto)/$(1)," >> $(3)
-	sed -i "s, ,\\\ ,g" $(3)
-	sed -i "s,:\\\ ,: ,g" $(3)
+	sed -i'' "s, ,\\\ ,g" $(3)
+	sed -i'' "s,:\\\ ,: ,g" $(3)
 
 endef
 $(eval $(foreach object_index, \
