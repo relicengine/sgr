@@ -4,7 +4,7 @@
 # Global Variables
 ###################################################################
 # Toolchain name
-GCC_TOOLCHAIN_NAME="m68k-amigaos-toolchain"
+GCC_TOOLCHAIN_NAME="m68k-elf-toolchain"
 
 # Install paths
 GCC_PREFIX="$(pwd)/${GCC_TOOLCHAIN_NAME}"
@@ -15,7 +15,10 @@ IS_MACOS="false"
 IS_LINUX="false"
 
 # Others
-EXE_SUFFIX="" #Will become ".exe" later if the build system is Windows
+LIBGCC="gcc-6.5.0"
+LIBGCC_ARCHIVE="$LIBGCC.tar.gz"
+LIBGCC_LINK="https://gcc.gnu.org/pub/gcc/releases/gcc-6.5.0/$LIBGCC_ARCHIVE"
+TARGET="m68k-elf"
 NPROC="6" #Change this to build GCC with more or less CPU cores!
 SHELL_PATH="/bin/bash"
 
@@ -46,6 +49,7 @@ if [ "${IS_MACOS}" = "true" ]; then
     SHELL_PATH="$(brew --prefix)/bin/bash"
 fi
 
+
 ###################################################################
 # Warning Message
 ###################################################################
@@ -61,6 +65,7 @@ if [ "${YES_NO}" != "y" ]; then
     exit 
 fi
 echo ""
+
 
 ###################################################################
 # Output Required Prerequisites for OS
@@ -96,27 +101,54 @@ if [ "${YES_NO}" != "y" ]; then
 fi
 echo ""
 
+
 ###################################################################
 # Create Folders for Builds
 ###################################################################
 mkdir -p "${GCC_TOOLCHAIN_NAME}"
 
+
 ###################################################################
 # Download, Build and Install GCC and Binutils
 ###################################################################
-git clone https://github.com/bebbo/amiga-gcc
+git clone https://github.com/RetroRevivalGames/amiga-gcc
 cd amiga-gcc
-make -j "$NPROC" update
-make -j "$NPROC" gcc PREFIX="${GCC_PREFIX}" SHELL="${SHELL_PATH}"
+make -j "$NPROC" update binutils_BRANCH=devel1
+make -j "$NPROC" gcc PREFIX="${GCC_PREFIX}" SHELL="${SHELL_PATH}" TARGET="$TARGET"
 cd ..
+
+
+###################################################################
+# Download, Build and Install LIBGCC
+###################################################################
+if ! [ -f "$LIBGCC_ARCHIVE" ]; then
+    wget "$LIBGCC_LINK"
+fi
+tar -xf "$LIBGCC_ARCHIVE"
+mkdir -p "build/$LIBGCC"
+cd "build/$LIBGCC"
+"../../$LIBGCC/configure" --prefix="${GCC_PREFIX}" --target="$TARGET" --with-cpu=m68000 --enable-languages=c,c++,objc --enable-version-specific-runtime-libs --disable-libssp --disable-nls --disable-shared --disable-multilib
+make -j "$NPROC" all-target-libgcc
+make install-target-libgcc
+cd "${GCC_PREFIX}/lib/gcc/$TARGET"
+cp "6.5.0/libgcc.a" "6.5.0b"
+rm -rf "6.5.0"
+cd ../../../..
+#make -j "$NPROC" all-target-libgcc CFLAGS_FOR_TARGET='-mregparm=4' CXXFLAGS_FOR_TARGET='-mregparm=4' GCC_FOR_TARGET="$GCC_PREFIX/bin/m68k-elf-gcc" CC_FOR_TARGET="$GCC_PREFIX/bin/m68k-elf-gcc" CXX_FOR_TARGET="$GCC_PREFIX/bin/m68k-elf-g++"
+#make install-target-libgcc
+
 
 ###################################################################
 # Zip the Toolchain for Storage in RRGamesCDN
 ###################################################################
 tar --xz -cf "${GCC_TOOLCHAIN_NAME}".tar.xz "${GCC_TOOLCHAIN_NAME}"
 
+
 ###################################################################
 # Clean up
 ###################################################################
+rm -rf build
+rm -rf "$LIBGCC_ARCHIVE"
+rm -rf "$LIBGCC"
 rm -rf amiga-gcc
 rm -rf "${GCC_TOOLCHAIN_NAME}"

@@ -2,12 +2,11 @@
 include $(path_sgr)/library-variables.mk
 -include $(dependencies_sgr_68k)
 
-#test := $(shell echo $$OSTYPE | grep "cygwin")
 
 ###################################################################
 # Rules - Build Configurations
 ###################################################################
-.PHONY: 	release debug build
+.PHONY: 	lto release debug build clean clean-lto clean-release clean-debug
 
 lto:		build
 release:	build
@@ -15,16 +14,21 @@ debug: 		build
 
 build: 		$(folder_prerequisites) \
 			$(path_build_tools) \
-			$(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_C)) \
-			$(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_ASM))
+			$(libmd)
 
-
-###################################################################
-# Rules - Other .PHONY Rules
-###################################################################
-.PHONY: 	clean
 clean:
-	$(RM) -rf $(path_sgr)/obj $(path_sgr)/dep
+	$(RM) -rf $(path_sgr)/obj $(path_sgr)/dep $(path_sgr)/lib
+
+clean-lto clean-release clean-debug:
+	$(RM) -rf $(path_sgr_68k_objects) $(libmd)
+
+
+###################################################################
+# Rules - Library Build
+###################################################################
+$(libmd): 	$(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_C)) \
+			$(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_ASM))
+	$(AR) rcs $@ $^ --plugin=$(path_68k_toolchain)/libexec/gcc/m68k-elf/6.5.0b/liblto_plugin.so
 
 
 ###################################################################
@@ -33,9 +37,9 @@ clean:
 $(path_build_tools): $(path_68k_toolchain)
 
 $(path_68k_toolchain):
-	$(WGET) -P $(path_build_tools) https://rrgamescdn.github.io/sgr-bucket/build-tools/$(OS)/$(ARCH)/m68k-amigaos-toolchain.tar.xz
-	$(TAR) -xf $(path_build_tools)/m68k-amigaos-toolchain.tar.xz -C $(path_build_tools)
-	$(RM) -f $(path_build_tools)/m68k-amigaos-toolchain.tar.xz
+	$(WGET) -P $(path_build_tools) https://rrgamescdn.github.io/sgr-bucket/build-tools/$(OS)/$(ARCH)/m68k-elf-toolchain.tar.xz
+	$(TAR) -xf $(path_build_tools)/m68k-elf-toolchain.tar.xz -C $(path_build_tools)
+	$(RM) -f $(path_build_tools)/m68k-elf-toolchain.tar.xz
 
 
 ###################################################################
@@ -48,7 +52,6 @@ $(folder_prerequisites):
 ###################################################################
 # Rules - Template Rules
 ###################################################################
-
 # Generate Rule for Each 68k C Source file
 # $(1) = The 68k object file to compile from C source.
 # $(2) = The corresponding C source file the object depends on.

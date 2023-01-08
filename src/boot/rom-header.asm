@@ -4,7 +4,7 @@
 /* ROM HEADER - EXCEPTION HANDLERS */
 /* ------------------------------------------------------------- */
 HEADER:					DC.L   0x00FFFFFC        				/*INITIAL STACK POINTER POSITION*/
-						DC.L   START      						/*START OF THE PROGRAM*/
+						DC.L   __START      					/*START OF THE PROGRAM*/
 						DC.L   IGNORE_HANDLER   				/*BUS ERROR*/
 						DC.L   IGNORE_HANDLER   				/*ADDRESS ERROR*/
 						DC.L   IGNORE_HANDLER   				/*ILLEGAL INSTRUCTION*/

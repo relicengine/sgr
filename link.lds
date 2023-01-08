@@ -1,30 +1,33 @@
-ENTRY(START)
+ENTRY(__START)
 
 MEMORY
 {
-	rom : ORIGIN = 0x00000000, LENGTH = 0x00400000
-	ram : ORIGIN = 0x00FF0000, LENGTH = 0x00010000
+	rom (rx)  : ORIGIN = 0x00000000, LENGTH = 0x00400000
+	ram (rwx) : ORIGIN = 0x00FF0000, LENGTH = 0x00010000
 }
 
 SECTIONS
 {
 	.text 0x00000000 : SUBALIGN(2) {
-  		KEEP(*(.header))
-  		*(.boot)
+		KEEP(*(.header))
+		*(.boot)
+		KEEP(*(.text.startup.main))
+		KEEP(*(.text.main))
 		*(.text*)
-  		*(.vdp)
+		*(.vdp)
+		*(.rodata .rodata.*)
 	} > rom
-	_stext = SIZEOF(.text);
+	__stext = SIZEOF(.text);
 	
-	.data 0x00FF0000 : AT(ADDR(.text) + SIZEOF(.text)) {
-	  *(.data)
-	  *(.asmdata)
-	  FILL(0x00)
-	  . = ALIGN(2);
+	.data 0x00FF0000 : AT( ADDR(.text) + SIZEOF(.text) ) {
+		*(.data*)
+		*(.asmdata)
+		FILL(0x00)
+		. = ALIGN(2);
 	} > ram
-	_sdata = SIZEOF(.data);
-	
-	.bss 0xFF0000 + SIZEOF(.data) : {
+	__sdata = SIZEOF(.data);
+
+	.bss 0x00FF0000 + SIZEOF(.data) : {
 		*(.bss) 
 	} > ram
 }

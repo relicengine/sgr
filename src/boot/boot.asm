@@ -1,6 +1,6 @@
 
                         .section .boot
-                        .global START
+                        .global __START
 
 VDP_CONTROL				=		0x00C00004 						/*VDP CONTROL ADDRESS */
 VDP_DATA				= 		0x00C00000 						/*VDP DATA ADDRESS */
@@ -14,7 +14,7 @@ VDP_REG_BASE			=		0x00008000						/*THE BASE ADDRESS OF THE VDP*/
 /* -------------------------------------------------------------*/
 /* HARDWARE INITIALIZATION*/
 /* -------------------------------------------------------------*/
-START:					MOVE.W 	#0x2700,SR     					/*DISABLE INTURUPTS*/
+__START:				MOVE.W 	#0x2700,SR     					/*DISABLE INTURUPTS*/
 						MOVEA.L	SP,A6							/*SET BASE POINTER TO SAME A STACK POINTER*/
 /* --- TMSS ----------------------------------------------------*/
 						MOVE.B 	VERSION,D0  					/*MOVE GENESIS HARDWARE VERSION TO D0 (***TAKE A LOOK AT THIS***)*/
@@ -50,13 +50,66 @@ VRAM_CLEAR:				MOVE.W	#0,VDP_DATA						/*WRITE 0 TO CURRENT VRAM ADDRESS*/
 RAM_CLEAR:				MOVE.L	D1,(A0)+						/*SET EACH MEMORY ADDRESS TO 0*/
 						DBRA	D0,RAM_CLEAR					/*CONTINUE CLEARING MEMORY*/
 /* --- COPY GLOBAL VARIABLES TO RAM ----------------------------*/
-						MOVE.W	#_sdata,D0						/*STORE NUMBER OF BYTES TO COPY IN D0*/
+						MOVE.W	#__sdata,D0						/*STORE NUMBER OF BYTES TO COPY IN D0*/
 						BEQ		SKIP_COPY						/*IF NO GLOBAL VARIABLES THEN DON'T COPY*/
-						LEA		_stext,A0						/*LOAD ROM ADDRESS WHERE .data SECTION STARTS INTO A0*/
+						LEA		__stext,A0						/*LOAD ROM ADDRESS WHERE .data SECTION STARTS INTO A0*/
 						LEA		0xFF0000,A1						/*LOAD RAM ADDRESS WHERE GLOBAL VARIABLES START INTO A1*/
 						LSR.W	#1,D0							/*TURN D0 INTO WORD COUNT INSTEAD OF BYTE COUNT*/
 						SUBQ.W	#1,D0							/*SUBTRACT 1 FROM D0 FOR DBRA INSTRUCTION BELOW*/
 COPY_GLOBALS:			MOVE.W	(A0)+,(A1)+						/*COPY WORD TO RAM*/
 						DBRA	D0,COPY_GLOBALS					/*CONTINUE UNTIL ALL WORDS ARE COPIED*/
 SKIP_COPY:
+						JMP		main
 						
+/*
+/////////////////////////////////////////////////////////////////
+/// INCLUDES                                                    /
+/////////////////////////////////////////////////////////////////
+#include <driver/System.asm>
+
+
+/////////////////////////////////////////////////////////////////
+/// ASSEMBLER DIRECTIVES                                        /
+/////////////////////////////////////////////////////////////////
+.section .boot
+.global  __START
+
+
+/////////////////////////////////////////////////////////////////
+/// BOOT CODE                                                   /
+/////////////////////////////////////////////////////////////////
+__START:                DISABLE_INTERRUPTS
+
+                        LEA.L   __SYSTEM_POINTERS(PC),A6
+                        MOVEM.L (A6)+,A0-A5/D6-D7
+
+                        TST.L   1(A0)
+                        BNE.B     __VDP_INIT
+                        TST.W   5(A0)
+                        BNE.B     __VDP_INIT
+
+                        MOVE.B  (A0),D0
+                        ANDI.B  #0x0F,D0
+                        BEQ.B   __VDP_INIT
+                        MOVE.L  #0x53454741,(A3)
+
+__VDP_INIT:
+__Z80_INIT:
+__RAM_INIT:
+__GLOBAL_VAR_INIT:
+__JOYPAD_INIT:
+
+
+/////////////////////////////////////////////////////////////////
+/// HARDWARE INITIALIZATION VALUES                              /
+/////////////////////////////////////////////////////////////////
+__SYSTEM_POINTERS:
+__VERSION:              DC.L    VERSION+1
+__Z80_BUS_REQUEST:      DC.L    Z80_BUS_REQUEST
+__Z80_RESET:            DC.L    Z80_RESET
+__TMSS:                 DC.L    TMSS
+__VDP_DATA:             DC.L    VDP_DATA
+__VDP_CONTROL:          DC.L    VDP_CONTROL
+__VDP_REG_COMMAND:      DC.L    0x00008000
+__VDP_REG_INCREMENT:    DC.L    0x00000100
+*/

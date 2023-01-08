@@ -31,10 +31,11 @@ MAKECMDGOALS 	:= $(filter-out usage, $(MAKECMDGOALS)) #Do not use 'usage' target
 .PHONY: usage $(MAKECMDGOALS)
 
 usage:
-	@echo "Usage: make release"
+	@echo "Usage: make lto"
+	@echo "       make release"
 	@echo "       make debug"
-	@echo "Build an SGR project using either release or debug configurations."
+	@echo "Build an SGR project using either lto (link-time optimization) release or debug configurations."
 
-# Forward each goal to project-rules.mk one at a time.
+# Forward each goal to project-rules.mk one at a time
 $(MAKECMDGOALS):
 	@$(MAKE) --file $(path_sgr)/project-rules.mk $@
