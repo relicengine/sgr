@@ -43,5 +43,4 @@ dependencies_sgr_68k			:= $(shell find $(path_sgr_68k_dependencies) -type f -reg
 ###################################################################
 folder_prerequisites			:= $(path_sgr_68k_dependencies)
 folder_prerequisites			+= $(path_sgr_68k_objects)
-folder_prerequisites			+= $(path_sgr_68k_lib)
 

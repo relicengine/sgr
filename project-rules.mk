@@ -32,8 +32,8 @@ clean-boot:
 $(path_project_bin)/rom.bin: $(path_project_bin)/rom.out
 	$(OBJCPY) -O binary $< $@
 
-$(path_project_bin)/rom.out: $(libmd) $(objects_project_68k)
-	$(CC) $(CFLAGS_68K) -Wl,-T,$(path_sgr)/link.lds,--gc-sections,-Map=$(path_project_bin)/rom.map -L $(path_sgr_68k_lib) -o $(path_project_bin)/rom.out $(objects_project_68k) $(libmd_flag) -lgcc
+$(path_project_bin)/rom.out: $(objects_sgr_68k) $(objects_project_68k)
+	$(CC) $(CFLAGS_68K) -Wl,-T,$(path_sgr)/link.lds,--gc-sections,-Map=$(path_project_bin)/rom.map -o $(path_project_bin)/rom.out $(objects_sgr_68k) $(objects_project_68k) -lgcc
 	$(OBJDUMP) -D $(path_project_bin)/rom.out > $(path_project_bin)/rom.dump
 
 

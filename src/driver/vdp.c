@@ -13,7 +13,7 @@ u8 vdp_get_register(VDPRegister vdp_register)
 
 void vdp_set_register(VDPRegister vdp_register, u8 value)
 {
-    *((unsigned short*) VDP_CONTROL) = (unsigned short) 0x8000 + value;
+    *((unsigned short*) VDP_CONTROL) = (unsigned short) 0x8000 + ((unsigned short) vdp_register << 8) + value;
 }
 
 

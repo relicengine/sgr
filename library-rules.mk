@@ -14,21 +14,14 @@ debug: 		build
 
 build: 		$(folder_prerequisites) \
 			$(path_build_tools) \
-			$(libmd)
+			$(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_C)) \
+			$(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_ASM))
 
 clean:
-	$(RM) -rf $(path_sgr)/obj $(path_sgr)/dep $(path_sgr)/lib
+	$(RM) -rf $(path_sgr)/obj $(path_sgr)/dep
 
 clean-lto clean-release clean-debug:
-	$(RM) -rf $(path_sgr_68k_objects) $(libmd)
-
-
-###################################################################
-# Rules - Library Build
-###################################################################
-$(libmd): 	$(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_C)) \
-			$(subst $(space_character_delimiter),\ ,$(objects_sgr_68k_ASM))
-	$(AR) rcs $@ $^ --plugin=$(path_68k_toolchain)/libexec/gcc/m68k-elf/6.5.0b/liblto_plugin.so
+	$(RM) -rf $(path_sgr_68k_objects)
 
 
 ###################################################################

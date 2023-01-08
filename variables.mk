@@ -12,7 +12,6 @@ path_68k_toolchain				:= $(path_build_tools)/m68k-elf-toolchain
 path_sgr_68k_dependencies		:= $(path_sgr)/dep
 path_sgr_68k_sources			:= $(path_sgr)/src
 path_sgr_68k_include			:= $(path_sgr)/include
-path_sgr_68k_lib				:= $(path_sgr)/lib
 
 path_sgr_68k_objects_debug		:= $(path_sgr)/obj/debug
 path_sgr_68k_objects_release	:= $(path_sgr)/obj/release
@@ -114,22 +113,4 @@ else ifeq ($(MAKECMDGOALS),release)
 	ASFLAGS_68K 				:= $(DEFAULT_ASFLAGS_68K)
 else
 	ASFLAGS_68K 				:= $(DEFAULT_ASFLAGS_68K)
-endif
-
-# The proper library to use depending on build configuration
-ifeq ($(MAKECMDGOALS),lto)
-	libmd						:= $(path_sgr_68k_lib)/libmd-lto.a
-	libmd_flag					:= -lmd-lto
-else ifeq ($(MAKECMDGOALS),clean-lto)
-	libmd						:= $(path_sgr_68k_lib)/libmd-lto.a
-else ifeq ($(MAKECMDGOALS),release)
-	libmd						:= $(path_sgr_68k_lib)/libmd-release.a
-	libmd_flag					:= -lmd-release
-else ifeq ($(MAKECMDGOALS),clean-release)
-	libmd						:= $(path_sgr_68k_lib)/libmd-release.a
-else ifeq ($(MAKECMDGOALS),debug)
-	libmd						:= $(path_sgr_68k_lib)/libmd-debug.a
-	libmd_flag					:= -lmd-debug
-else ifeq ($(MAKECMDGOALS),clean-debug)
-	libmd						:= $(path_sgr_68k_lib)/libmd-debug.a
 endif
