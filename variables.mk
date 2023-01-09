@@ -3,10 +3,38 @@ SHELL 							:= /bin/bash
 space_character_delimiter		:= ?
 #PRINT = @echo -e "\e[1;34mBuilding $<\e[0m"
 
+
+###################################################################
+# Operating System and Processor Architecture
+###################################################################
+ifeq ($(shell echo $$OSTYPE | grep -o cygwin),cygwin)
+	OS							:= windows
+else ifeq ($(shell echo $$OSTYPE | grep -o darwin),darwin)
+	OS							:= macOS
+else ifeq ($(shell echo $$OSTYPE | grep -o linux),linux)
+	OS							:= linux
+else
+	OS							:= unsupported-os
+endif
+
+ifeq ($(shell uname -m),x86_64)
+	ARCH						:= 64-bit
+else ifeq ($(shell uname -m),i686)
+	ARCH						:= 32-bit
+else ifeq ($(shell uname -m),i386)
+	ARCH						:= 32-bit
+else
+	ARCH						:= unsupported-arch
+endif
+
+
 ###################################################################
 # SGR Library Filepath Variables
 ###################################################################
 path_build_tools				:= /home/$(shell whoami)/rrengine-build-tools
+ifeq ($(OS),macOS) 
+	path_build_tools 			:= /Users/$(shell whoami)/rrengine-build-tools
+endif
 path_68k_toolchain				:= $(path_build_tools)/m68k-elf-toolchain
 
 path_sgr_68k_dependencies		:= $(path_sgr)/dep
@@ -47,30 +75,6 @@ else ifeq ($(MAKECMDGOALS),debug)
 	path_project_68k_objects	:= $(path_project_68k_objects_debug)
 else ifeq ($(MAKECMDGOALS),clean-debug)
 	path_project_68k_objects	:= $(path_project_68k_objects_debug)
-endif
-
-
-###################################################################
-# Operating System and Processor Architecture
-###################################################################
-ifeq ($(shell echo $$OSTYPE | grep -o cygwin),cygwin)
-	OS							:= windows
-else ifeq ($(shell echo $$OSTYPE | grep -o darwin),darwin)
-	OS							:= macOS
-else ifeq ($(shell echo $$OSTYPE | grep -o linux),linux)
-	OS							:= linux
-else
-	OS							:= unsupported-os
-endif
-
-ifeq ($(shell uname -m),x86_64)
-	ARCH						:= 64-bit
-else ifeq ($(shell uname -m),i686)
-	ARCH						:= 32-bit
-else ifeq ($(shell uname -m),i386)
-	ARCH						:= 32-bit
-else
-	ARCH						:= unsupported-arch
 endif
 
 

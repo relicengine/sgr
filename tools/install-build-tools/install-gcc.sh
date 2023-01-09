@@ -125,6 +125,11 @@ if ! [ -f "$LIBGCC_ARCHIVE" ]; then
     wget "$LIBGCC_LINK"
 fi
 tar -xf "$LIBGCC_ARCHIVE"
+if [ "${IS_MACOS}" = "true" ]; then
+    cd "$LIBGCC"
+    ./contrib/download_prerequisites
+    cd ..
+fi
 mkdir -p "build/$LIBGCC"
 cd "build/$LIBGCC"
 "../../$LIBGCC/configure" --prefix="${GCC_PREFIX}" --target="$TARGET" --with-cpu=m68000 --enable-languages=c,c++,objc --enable-version-specific-runtime-libs --disable-libssp --disable-nls --disable-shared --disable-multilib
