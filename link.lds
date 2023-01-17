@@ -11,10 +11,11 @@ SECTIONS
 	.text 0x00000000 : SUBALIGN(2) {
 		KEEP(*(.header))
 		*(.boot)
+		*(.vdp_regs)
 		KEEP(*(.text.startup.main))
 		KEEP(*(.text.main))
 		*(.text*)
-		*(.vdp)
+		*(.interrupts)
 		*(.rodata .rodata.*)
 	} > rom
 	__stext = SIZEOF(.text);

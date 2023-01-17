@@ -33,7 +33,7 @@ $(path_project_bin)/rom.bin: $(path_project_bin)/rom.out
 	$(OBJCPY) -O binary $< $@
 
 $(path_project_bin)/rom.out: $(objects_sgr_68k) $(objects_project_68k)
-	$(CC) $(CFLAGS_68K) -Wl,-T,$(path_sgr)/link.lds,--gc-sections,-Map=$(path_project_bin)/rom.map -o $(path_project_bin)/rom.out $(objects_sgr_68k) $(objects_project_68k) -lgcc
+	$(CC) $(CFLAGS_68K) -Wa,--register-prefix-optional -Wl,-T,$(path_sgr)/link.lds,--gc-sections,-Map=$(path_project_bin)/rom.map -o $(path_project_bin)/rom.out $(objects_sgr_68k) $(objects_project_68k) -lgcc
 	$(OBJDUMP) -D $(path_project_bin)/rom.out > $(path_project_bin)/rom.dump
 
 
@@ -55,7 +55,7 @@ $(folder_prerequisites):
 define OBJECT_PROJECT_68K_C_TEMPLATE
 
 $(path_project_68k_objects)/$(1): $(2)
-	$(CC) -c $(CFLAGS_68K) -I $(path_project_68k_include) -I $(path_sgr_68k_include) -o "$$@" "$$<"
+	$(CC) -c $(CFLAGS_68K) -Wa,--register-prefix-optional -I $(path_project_68k_include) -I $(path_sgr_68k_include) -o "$$@" "$$<"
 	$(MAKEDEPEND) -f- -o .c -I $(path_project_68k_include) -I $(path_sgr_68k_include) "$$<" > $(3)
 	$(SED) -i "s,$(2),$(path_project_68k_objects_debug)/$(1)," $(3)
 	$(AWK) "NR>=3 && NR<=3" $(3) | $(SED) "s,$(path_project_68k_objects_debug)/$(1),$(path_project_68k_objects_release)/$(1)," >> $(3)

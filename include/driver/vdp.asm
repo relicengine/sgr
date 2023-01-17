@@ -1,0 +1,4 @@
+
+VDP_DATA            =   0x00C00000
+VDP_CONTROL         =   0x00C00004
+VDP_REGISTER_CMD    =   0x8000

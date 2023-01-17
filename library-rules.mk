@@ -52,7 +52,7 @@ $(folder_prerequisites):
 define OBJECT_SGR_68K_C_TEMPLATE
 
 $(path_sgr_68k_objects)/$(1): $(2)
-	$(CC) -c $(CFLAGS_68K) -I $(path_sgr_68k_include) -o "$$@" "$$<"
+	$(CC) -c $(CFLAGS_68K) -Wa,--register-prefix-optional -I $(path_sgr_68k_include) -o "$$@" "$$<"
 	$(MAKEDEPEND) -f- -o .c -I $(path_sgr_68k_include) "$$<" > $(3)
 	$(SED) -i "s,$(2),$(path_sgr_68k_objects_debug)/$(1)," $(3)
 	$(AWK) "NR>=3 && NR<=3" $(3) | $(SED) "s,$(path_sgr_68k_objects_debug)/$(1),$(path_sgr_68k_objects_release)/$(1)," >> $(3)

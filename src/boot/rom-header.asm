@@ -79,7 +79,7 @@ HEADER:					DC.L   0x00FFFFFC        				/*INITIAL STACK POINTER POSITION*/
 						DC.W 0x0000              				/*CHECKSUM*/
 						.string "J               " 				/*I/O SUPPORT*/
 						DC.L 0x00000000          				/*START ADDRESS OF ROM*/
-						DC.L END              					/*END ADDRESS OF ROM*/
+						DC.L 0x00400000              			/*END ADDRESS OF ROM*/
 						DC.L 0x00FF0000          				/*START ADDRESS OF RAM*/
 						DC.L 0x00FFFFFF          				/*END ADDRESS OF RAM*/
 						DC.L 0x00000000          				/*SRAM ENABLED*/
