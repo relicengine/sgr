@@ -19,7 +19,7 @@
 #define BIT7                0b10000000
 
 typedef u32 VDPReg;
-typedef u16 VDPRegConfig;
+typedef u32 VDPConfig;
 
 enum VDPReg {
     MODE_SET_1              = 0,
@@ -44,6 +44,15 @@ enum VDPReg {
     DMA_SOURCE_HIGH         = 23
 };
 
+enum VDPConfig {
+    VRAM_READ               = 0x00000000,
+    VRAM_WRITE              = 0x40000000,
+    CRAM_READ               = 0x00000020,
+    CRAM_WRITE              = 0xC0000000,
+    VSRAM_READ              = 0x00000010,
+    VSRAM_WRITE             = 0x40000010
+};
+
 extern u8 vdp_registers[VDP_REGISTER_COUNT];
 
 u8 VDPGetRegister(VDPReg vdp_register);
@@ -51,5 +60,15 @@ void VDPSetRegister(VDPReg vdp_register, u16 value);
 
 void VDPGetRegister_ASM(VDPReg vdp_register);
 void VDPSetRegister_ASM(VDPReg vdp_register, u16 value);
+
+void VDPConfigure(VDPConfig vdp_configuration, u16 address);
+
+u8  VDPReadByte();
+u16 VDPReadWord();
+u32 VDPReadLongword();
+
+void VDPWriteByte(u8 value);
+void VDPWriteWord(u16 value);
+void VDPWriteLongword(u32 value);
 
 #endif // __VDP_H__
