@@ -27,7 +27,7 @@ void VDPWriteByte(u8 value)         { *((volatile u8*)VDP_DATA) = value; }
 void VDPWriteWord(u16 value)        { *((volatile u16*)VDP_DATA) = value; }
 void VDPWriteLongword(u32 value)    { *((volatile u32*)VDP_DATA) = value; }
 
-
+void VDPSetAutoInc(u16 increment)    { VDPSetRegister(0xF, increment); }
 
 
 

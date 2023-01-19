@@ -71,4 +71,6 @@ void VDPWriteByte(u8 value);
 void VDPWriteWord(u16 value);
 void VDPWriteLongword(u32 value);
 
+void VDPSetAutoInc(u16 increment);
+
 #endif // __VDP_H__
