@@ -10,4 +10,6 @@ typedef unsigned char u8;
 typedef unsigned short u16;
 typedef unsigned long u32;
 
+typedef enum { false, true } bool;
+
 #endif // __TYPES_H__

@@ -1,6 +1,4 @@
 
-#include <driver/vdp.asm>
-
 .global     VDPGetRegister_ASM
 .section    .text.VDPGetRegister_ASM
 //D0.W - REG NUM
